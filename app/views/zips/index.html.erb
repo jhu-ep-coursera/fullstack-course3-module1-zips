@@ -1,0 +1,35 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Listing Zips</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Id</th>
+      <th>City</th>
+      <th>State</th>
+      <th>Population</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @zips.each do |zip| %>
+      <% zip=toZip(zip) %>
+      <tr>
+        <td><%= zip.id %></td>
+        <td><%= zip.city %></td>
+        <td><%= zip.state %></td>
+        <td><%= zip.population %></td>
+        <td><%= link_to 'Show', zip %></td>
+        <td><%= link_to 'Edit', edit_zip_path(zip) %></td>
+        <td><%= link_to 'Destroy', zip, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<%= will_paginate @zips %>
+
+<br>
+
+<%= link_to 'New Zip', new_zip_path %>
