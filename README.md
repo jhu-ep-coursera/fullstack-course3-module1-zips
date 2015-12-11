@@ -1123,12 +1123,14 @@ was provided by the `MongoLab` page on the `Heroku` Dev Center page.
 
 5. Update the `Gemfile` so that Heroku will accept and deploy our application.
 
-    Remove `sqlite` gem from `Gemfile`. Heroku does not support `sqlite` and 
-    this application does not use an `RDBMS`. However, this gem was put there by 
-    by `rails new` by default. 
+    Restrict the `sqlite` gem in `Gemfile` to the development
+    profile. Heroku does not support `sqlite` and this application does
+    not use an `RDBMS`. However, this gem was put there by by `rails new`
+    by default and required to stick around because we have not removed 
+    ActiveRecord from the application.
 
     ```ruby
-    #gem 'sqlite3
+    gem 'sqlite3', group: :development
     ```
 
     Add the postgres gem to the production profile. We have not neutered the 
