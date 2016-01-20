@@ -36,6 +36,7 @@ Generate a mongo database configuration file.
 
 ```shell
 $ rails g mongoid:config
+(output:)
       create  config/mongoid.yml
 ```
 

@@ -10,6 +10,7 @@
 <pre class="shell"><code>$ bundle</code></pre>
 <p>Generate a mongo database configuration file.</p>
 <pre class="shell"><code>$ rails g mongoid:config
+(output:)
       create  config/mongoid.yml</code></pre>
 <p>While the defaults generated from the above command are fine, do make sure that the names defined for <code>development:clients:default:database</code> and <code>test:clients:default:database</code> agree with where you import the JSON in a later step.</p>
 <pre class="shell"><code>$ cat config/mongoid.yml | grep -v \# | grep -v &#39;^$&#39;
