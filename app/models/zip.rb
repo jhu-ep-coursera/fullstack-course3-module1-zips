@@ -112,8 +112,9 @@ class Zip
   def save 
     Rails.logger.debug {"saving #{self}"}
 
-    self.class.collection
+    result=self.class.collection
               .insert_one(_id:@id, city:@city, state:@state, pop:@population)
+    @id=result.inserted_id
   end
 
   # update the values for this instance

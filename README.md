@@ -367,12 +367,16 @@ zips_development.find | {"find"=>"zips", "filter"=>{"_id"=>"11226"},
 ### Implement a `save()` Instance Method to Insert a New Zip
 
 The `save()` method should preserve the state of the current `zip` instance.
+Note that although we are manually assigning the `_id` in this case and already
+know the value without consulting the `result`. However, for dyanamic `_id` assignment
+cases, we can get the `inserted_id` from the `result`.
 
 ```ruby
   def save 
     Rails.logger.debug {"saving #{self}"}
 
-    collection.insert_one(_id:@id, city:@city, state:@state, pop:@pop)
+    result=collection.insert_one(_id:@id, city:@city, state:@state, pop:@pop)
+    @id=result.inserted_id
   end
 ```
 
@@ -386,7 +390,7 @@ We will create a `Zip` instance and then call `save()` to insert it into the Dat
 saving 00001: Fake City, WY, pop=3
 zips_development.insert | STARTED | {"insert"=>"zips", "documents"=>[{"_id"=>"00001", 
     "city"=>"Fake City", "state"=>"WY", "pop"=>3}], "writeConcern"=>{"w"=>1}, "ordered"=>true}
- => #<Mongo::Operation::Result:54733380 documents=[{"ok"=>1, "n"=>1}]> 
+ => "00001"
 ```
 
 ### Add an `update()` Instance Method to Change the Values in the Database
