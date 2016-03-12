@@ -219,11 +219,12 @@ zips_development.find | {<span class="st">&quot;find&quot;</span>=&gt;<span clas
 
  =&gt; <span class="dv">111396</span> </code></pre>
 <h3 id="implement-a-save-instance-method-to-insert-a-new-zip">Implement a <code>save()</code> Instance Method to Insert a New Zip</h3>
-<p>The <code>save()</code> method should preserve the state of the current <code>zip</code> instance.</p>
+<p>The <code>save()</code> method should preserve the state of the current <code>zip</code> instance. Note that although we are manually assigning the <code>_id</code> in this case and already know the value without consulting the <code>result</code>. However, for dyanamic <code>_id</code> assignment cases, we can get the <code>inserted_id</code> from the <code>result</code>.</p>
 <pre class="sourceCode ruby"><code class="sourceCode ruby">  <span class="kw">def</span> save 
     <span class="dt">Rails</span>.logger.debug {<span class="st">&quot;saving </span><span class="ot">#{</span><span class="dv">self</span><span class="ot">}</span><span class="st">&quot;</span>}
 
-    collection.insert_one(_id<span class="st">:@id</span>, city<span class="st">:@city</span>, state<span class="st">:@state</span>, pop<span class="st">:@pop</span>)
+    result=collection.insert_one(_id<span class="st">:@id</span>, city<span class="st">:@city</span>, state<span class="st">:@state</span>, pop<span class="st">:@pop</span>)
+    <span class="ot">@id</span>=result.inserted_id
   <span class="kw">end</span></code></pre>
 <p>We will create a <code>Zip</code> instance and then call <code>save()</code> to insert it into the Database</p>
 <pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; zip=<span class="dt">Zip</span>.new({<span class="st">&#39;id&#39;</span>:<span class="st">&quot;00001&quot;</span>,<span class="st">&#39;city&#39;</span>:<span class="st">&quot;Fake City&quot;</span>,<span class="st">&#39;state&#39;</span>:<span class="st">&quot;WY&quot;</span>,<span class="st">&#39;population&#39;</span>:<span class="dv">3</span>})
@@ -233,7 +234,7 @@ zips_development.find | {<span class="st">&quot;find&quot;</span>=&gt;<span clas
 saving <span class="dv">00001</span>: <span class="dt">Fake</span> <span class="dt">City</span>, <span class="dt">WY</span>, pop=<span class="dv">3</span>
 zips_development.insert | <span class="dt">STARTED</span> | {<span class="st">&quot;insert&quot;</span>=&gt;<span class="st">&quot;zips&quot;</span>, <span class="st">&quot;documents&quot;</span>=&gt;[{<span class="st">&quot;_id&quot;</span>=&gt;<span class="st">&quot;00001&quot;</span>, 
     <span class="st">&quot;city&quot;</span>=&gt;<span class="st">&quot;Fake City&quot;</span>, <span class="st">&quot;state&quot;</span>=&gt;<span class="st">&quot;WY&quot;</span>, <span class="st">&quot;pop&quot;</span>=&gt;<span class="dv">3</span>}], <span class="st">&quot;writeConcern&quot;</span>=&gt;{<span class="st">&quot;w&quot;</span>=&gt;<span class="dv">1</span>}, <span class="st">&quot;ordered&quot;</span>=&gt;<span class="dv">true</span>}
- =&gt; <span class="co">#&lt;Mongo::Operation::Result:54733380 documents=[{&quot;ok&quot;=&gt;1, &quot;n&quot;=&gt;1}]&gt; </span></code></pre>
+ =&gt; <span class="st">&quot;00001&quot;</span></code></pre>
 <h3 id="add-an-update-instance-method-to-change-the-values-in-the-database">Add an <code>update()</code> Instance Method to Change the Values in the Database</h3>
 <p>Create an <code>update()</code> method that accepts a hash and performs an update on those values after accounting for any name mappings.</p>
 <p>Note that here -- again -- our method would be much simpler if we did not have to manually map <code>pop</code> to <code>population</code> internally.</p>
@@ -463,7 +464,7 @@ json.array!(<span class="ot">@zips</span>) <span class="kw">do</span> |zip|
   json.extract! zip, <span class="st">:id</span>, <span class="st">:id</span>, <span class="st">:city</span>, <span class="st">:state</span>, <span class="st">:population</span>
   json.url zip_url(zip, format: <span class="st">:json</span>)
 <span class="kw">end</span></code></pre>
-<p>Fix the JSON view error by calling the helper method in <code>app/helpers/index.json.builder</code>.</p>
+<p>Fix the JSON view error by calling the helper method in <code>app/helpers/zips/index.json.jbuilder</code>.</p>
 <pre class="sourceCode ruby"><code class="sourceCode ruby">json.array!(<span class="ot">@zips</span>) <span class="kw">do</span> |zip|
   zip=toZip(zip)
   json.extract! zip, <span class="st">:id</span>, <span class="st">:id</span>, <span class="st">:city</span>, <span class="st">:state</span>, <span class="st">:population</span>

@@ -687,7 +687,7 @@ json.array!(@zips) do |zip|
 end
 ```
 
-Fix the JSON view error by calling the helper method in `app/helpers/index.json.builder`.
+Fix the JSON view error by calling the helper method in `app/helpers/zips/index.json.jbuilder`.
 
 ```ruby
 json.array!(@zips) do |zip|
