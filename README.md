@@ -1029,17 +1029,17 @@ If you flip the value of `city:1` from `1` to `-1`, should will see the ordering
 
 ## Heroku Deployment
 
-### Setup Database on MongoLabs
+### Setup MongoDB Database on mLab
 
-1. Create a [`MongoLabs Account`](https://mongolab.com/)
+1. Create an [`mLab Account`](https://mlab.com/)
 
 	```
-	https://mongolab.com/home
+	https://mlab.com/home
 	```
 
-2. Create a (Free Sandbox) Database on MongoLabs
+2. Create a (Free Sandbox) Database on mLab
 	
-	* From your mongolab home page, select `Create New` MongoDB Deployments
+	* From your mLab home page, select `Create New` MongoDB Deployments
 	* For `Cloud Provider:` select `Amazon Web Services`
 		* On the `Location:` Pull Down Menu, select the Region that is geographically closest to you  
 	* Under Plan:  select the `Single-node` Option
@@ -1048,7 +1048,7 @@ If you flip the value of `city:1` from `1` to `-1`, should will see the ordering
 	* In the `Database name:` input field, supply a name (i.e., zips_production)
 	* Verify the `Price:` field calculator is `$0 / month`
 	* Select the `Create new MongoDB deployment` button
-	* On your mongolab home page, you should now see your database (i.e., zips_production) listed
+	* On your mLab home page, you should now see your database (i.e., zips_production) listed
 	* Now select your newly created MongoDB deployment
 	* The following URL template should be displayed with the details pertaining to your deployment
 	
@@ -1057,7 +1057,7 @@ If you flip the value of `city:1` from `1` to `-1`, should will see the ordering
 			mongodb://<dbuser>:<dbpass>@<dbhost>/<dbname>
 		```
 
-3. Create a Database User and Password on MongoLabs
+3. Create a Database User and Password on mLab
 
 	* Select the `Users` Menu
 	* Select the `Add database user` button
@@ -1072,7 +1072,7 @@ using the database and user account created above
 	```shell
 	$ wget http://media.mongodb.org/zips.json
 	$ mongoimport -h dbhost -d dbname -c zips -u dbuser -p dbpass --file zips.json
-	2015-12-07T18:03:34.015-0500	connected to: ds######.mongolab.com:<port>
+	2015-12-07T18:03:34.015-0500	connected to: ds######.mlab.com:<port>
 	2015-12-07T18:03:36.416-0500	[################........] <dbname>.<collection_name> 2.1 MB/3.0 MB (68.5%)
 	2015-12-07T18:03:38.953-0500	imported 29353 documents
 	```

@@ -5,7 +5,7 @@
 <pre class="shell"><code>$ rails new zips</code></pre>
 <h3 id="add-mongoid-to-application-to-supply-mongodb-connection">Add Mongoid to Application to supply MongoDB Connection</h3>
 <p>Add the Mongoid gem to the <code>Gemfile</code></p>
-<pre class="sourceCode ruby"><code class="sourceCode ruby">gem <span class="st">&#39;mongoid&#39;</span>, <span class="st">&#39;~&gt; 5.0.0&#39;</span></code></pre>
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby">gem <span class="st">&#39;mongoid&#39;</span>, <span class="st">&#39;~&gt; 5.0.0&#39;</span></code></pre></div>
 <p>Run the bundler</p>
 <pre class="shell"><code>$ bundle</code></pre>
 <p>Generate a mongo database configuration file.</p>
@@ -33,7 +33,7 @@ test:
           mode: primary
         max_pool_size: 1</code></pre>
 <p>Next, we need to add some configurations to <code>config/application.rb</code>. This is used by stand-alone programs like <code>rails console</code> to be able to load the Mongoid environment with fewer steps. This also configures which ORM your scaffold commands use by default. Adding the mongoid gem had the impact of making it the default ORM. The lines below show how we can set it back to ether ActiveRecord or Mongoid. I am leaving it as ActiveRecord here so that we do not rock the boat too soon.</p>
-<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="kw">module</span> <span class="dt">Zips</span>
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="kw">module</span> <span class="dt">Zips</span>
   <span class="kw">class</span> <span class="dt">Application</span> &lt; <span class="dt">Rails</span>::<span class="dt">Application</span>
     ...
     <span class="co"># bootstraps mongoid within applications -- like rails console</span>
@@ -48,7 +48,7 @@ test:
     <span class="co"># Do not swallow errors in after_commit/after_rollback callbacks.</span>
     config.active_record.raise_in_transactional_callbacks = <span class="dv">true</span>
   <span class="kw">end</span>
-<span class="kw">end</span></code></pre>
+<span class="kw">end</span></code></pre></div>
 <h3 id="start-web-server">Start Web Server</h3>
 <pre class="shell"><code>$ rails s</code></pre>
 <h3 id="download-zips.json-from-mongodb-web-site-and-import">Download zips.json from MongoDB Web Site and Import</h3>
@@ -61,13 +61,13 @@ test:
 2015-09-12T19:44:10.785-0400    connected to: localhost
 2015-09-12T19:44:11.554-0400    imported 29353 documents</code></pre>
 <p>To help familiarize you with the data we just imported, below is a represtantive document from the <code>zips.json</code> data set</p>
-<pre class="sourceCode json"><code class="sourceCode json">{ 
-    <span class="dt">&quot;_id&quot;</span> : <span class="st">&quot;01007&quot;</span>, 
-    <span class="dt">&quot;city&quot;</span> : <span class="st">&quot;BELCHERTOWN&quot;</span>, 
-    <span class="dt">&quot;loc&quot;</span> : [ <span class="fl">-72.410953</span>, <span class="fl">42.275103</span> ], 
-    <span class="dt">&quot;pop&quot;</span> : <span class="dv">10579</span>, 
-    <span class="dt">&quot;state&quot;</span> : <span class="st">&quot;MA&quot;</span> 
-}</code></pre>
+<div class="sourceCode"><pre class="sourceCode json"><code class="sourceCode json"><span class="fu">{</span> 
+    <span class="dt">&quot;_id&quot;</span> <span class="fu">:</span> <span class="st">&quot;01007&quot;</span><span class="fu">,</span> 
+    <span class="dt">&quot;city&quot;</span> <span class="fu">:</span> <span class="st">&quot;BELCHERTOWN&quot;</span><span class="fu">,</span> 
+    <span class="dt">&quot;loc&quot;</span> <span class="fu">:</span> <span class="ot">[</span> <span class="fl">-72.410953</span><span class="ot">,</span> <span class="fl">42.275103</span> <span class="ot">]</span><span class="fu">,</span> 
+    <span class="dt">&quot;pop&quot;</span> <span class="fu">:</span> <span class="dv">10579</span><span class="fu">,</span> 
+    <span class="dt">&quot;state&quot;</span> <span class="fu">:</span> <span class="st">&quot;MA&quot;</span> 
+<span class="fu">}</span></code></pre></div>
 <h2 id="create-a-zip-class-to-access-the-database">Create a Zip Class to Access the Database</h2>
 <p>We will be manually creating an <code>app/model/zip.rb</code> class that initially can obtain a connection to the MongoDB server and database. We will be evolving this class in the subsequent sections, so to start, the <code>zip.rb</code> model will implement the following:</p>
 <ul>
@@ -76,7 +76,7 @@ test:
 </ul>
 <p>These methods are consistent with methods implemented when using mongoid ORM.</p>
 <h3 id="add-the-mongo_client-and-collection-class-methods">Add the <code>mongo_client</code> and <code>collection</code> class methods</h3>
-<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="kw">class</span> <span class="dt">Zip</span>
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="kw">class</span> <span class="dt">Zip</span>
   <span class="co"># convenience method for access to client in console</span>
   <span class="kw">def</span> <span class="dv">self</span>.mongo_client
    <span class="dt">Mongoid</span>::<span class="dt">Clients</span>.default
@@ -86,9 +86,9 @@ test:
   <span class="kw">def</span> <span class="dv">self</span>.collection
    <span class="dv">self</span>.mongo_client[<span class="st">&#39;zips&#39;</span>]
   <span class="kw">end</span>
-<span class="kw">end</span></code></pre>
+<span class="kw">end</span></code></pre></div>
 <p>In the <code>rails console</code>, invoke the <code>zip</code> class methods to verify a connection can be made and to ensure we are interacting with the intended database within Mongo. This database should match with what was used as part of the <code>mongoimport</code> command and should contain the zip codes imported from <code>zips.json</code> into our <code>zips</code> collection.</p>
-<pre class="sourceCode ruby"><code class="sourceCode ruby">$ rails c
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby">$ rails c
 <span class="dt">Loading</span> development environment (<span class="dt">Rails</span> <span class="fl">4.2</span>.<span class="dv">3</span>)
 &gt; <span class="dt">Zip</span>.mongo_client
  =&gt; <span class="co">#&lt;Mongo::Client:0x34369420 cluster=localhost:27017&gt;</span>
@@ -101,21 +101,21 @@ test:
 
 &gt; <span class="dt">Zip</span>.collection.find.count
 <span class="dt">DEBUG</span> | zips_development.count | <span class="dt">STARTED</span> | {<span class="st">&quot;count&quot;</span>=&gt;<span class="st">&quot;zips&quot;</span>, <span class="st">&quot;query&quot;</span>=&gt;{}}
- =&gt; <span class="dv">29353</span>                                                             </code></pre>
+ =&gt; <span class="dv">29353</span>                                                             </code></pre></div>
 <h2 id="update-the-zip-class-with-crud-methods">Update the Zip Class with CRUD Methods</h2>
 <p>Now that we have a connection to the database and can access the collection, it is time to get started implementing methods to perform CRUD against our model.</p>
 <h3 id="add-an-all-class-method-to-find-all-documents">Add an <code>all()</code> Class Method to Find All Documents</h3>
 <p>Lets add a method that will return all documents from the zips collection. We will be starting with a <a href="https://docs.mongodb.org/manual/reference/glossary/#term-projection">projection</a> that only returns the fields of interest -- in our case: <code>_id</code>, <code>city</code>, <code>state</code>, and <code>pop</code>. Since we started off earlier examples by eliminating location, I am choosing to show a projection that eliminates that property from our output.</p>
-<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="kw">def</span> <span class="dv">self</span>.all
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="kw">def</span> <span class="dv">self</span>.all
     collection.find
               .projection({_id<span class="st">:true</span>, city<span class="st">:true</span>, state<span class="st">:true</span>, pop<span class="st">:true</span>})
-<span class="kw">end</span> </code></pre>
+<span class="kw">end</span> </code></pre></div>
 <p>Within the <code>rails console</code>, verify we can use our implementation of the <code>all()</code> method that also omits the <code>location</code> property.</p>
-<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; <span class="dt">Zip</span>.all.count
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; <span class="dt">Zip</span>.all.count
  =&gt; <span class="dv">29353</span> 
 
 &gt; <span class="dt">Zip</span>.all.first
- =&gt; {<span class="st">&quot;_id&quot;</span>=&gt;<span class="st">&quot;99743&quot;</span>, <span class="st">&quot;city&quot;</span>=&gt;<span class="st">&quot;HEALY&quot;</span>, <span class="st">&quot;pop&quot;</span>=&gt;<span class="dv">1058</span>, <span class="st">&quot;state&quot;</span>=&gt;<span class="st">&quot;AK&quot;</span>} </code></pre>
+ =&gt; {<span class="st">&quot;_id&quot;</span>=&gt;<span class="st">&quot;99743&quot;</span>, <span class="st">&quot;city&quot;</span>=&gt;<span class="st">&quot;HEALY&quot;</span>, <span class="st">&quot;pop&quot;</span>=&gt;<span class="dv">1058</span>, <span class="st">&quot;state&quot;</span>=&gt;<span class="st">&quot;AK&quot;</span>} </code></pre></div>
 <p>In order to expand this query, lets augment this method with the following:</p>
 <ul>
 <li>an optional find-by-prototype</li>
@@ -124,7 +124,7 @@ test:
 </ul>
 <p>Additionally, we will map the document term <code>pop</code> with an internal term <code>population</code> so that we don't conflict with a reserved word later. Make sure we keep a stable sort when manipulating the sort hash or our ordering expressed to the DB could be randomized.</p>
 <p>Please note that the example provided is a bit more complicated than required because we have added a multi-level sort in addition to the field mappings. The ordering of keys within the sort hash must state stable while performing the mapping from <code>population</code> within the application to <code>pop</code> within the database..</p>
-<pre class="sourceCode ruby"><code class="sourceCode ruby">  <span class="kw">def</span> <span class="dv">self</span>.all(prototype={}, sort={<span class="st">:population=</span>&gt;<span class="dv">1</span>}, offset=<span class="dv">0</span>, limit=<span class="dv">100</span>)
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby">  <span class="kw">def</span> <span class="dv">self</span>.all(prototype={}, sort={<span class="st">:population=</span>&gt;<span class="dv">1</span>}, offset=<span class="dv">0</span>, limit=<span class="dv">100</span>)
     <span class="co">#map internal :population term to :pop document term</span>
     tmp = {} <span class="co">#hash needs to stay in stable order provided</span>
     sort.each {|k,v| 
@@ -145,24 +145,24 @@ test:
     result=result.limit(limit) <span class="kw">if</span> !limit.nil?
 
     <span class="kw">return</span> result
-  <span class="kw">end</span></code></pre>
+  <span class="kw">end</span></code></pre></div>
 <p>Verify that the default arguments to our augmented <code>all()</code> method returns only 100 documents. Observe the MongoDB API debug statement to notice that the results are sorted by population.</p>
-<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; <span class="dt">Zip</span>.all.to_a.count
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; <span class="dt">Zip</span>.all.to_a.count
 getting all zips, prototype={}, sort={<span class="st">:pop=</span>&gt;<span class="dv">1</span>}, offset=<span class="dv">0</span>, limit=<span class="dv">100</span>
 zips_development.find | {<span class="st">&quot;find&quot;</span>=&gt;<span class="st">&quot;zips&quot;</span>, <span class="st">&quot;filter&quot;</span>=&gt;{}, 
     <span class="st">&quot;projection&quot;</span>=&gt;{<span class="st">&quot;_id&quot;</span>=&gt;<span class="dv">true</span>, <span class="st">&quot;city&quot;</span>=&gt;<span class="dv">true</span>, <span class="st">&quot;state&quot;</span>=&gt;<span class="dv">true</span>, <span class="st">&quot;pop&quot;</span>=&gt;<span class="dv">true</span>}, 
     <span class="st">&quot;skip&quot;</span>=&gt;<span class="dv">0</span>, <span class="st">&quot;limit&quot;</span>=&gt;<span class="dv">100</span>, <span class="st">&quot;sort&quot;</span>=&gt;{<span class="st">&quot;pop&quot;</span>=&gt;<span class="dv">1</span>}}
 
- =&gt; <span class="dv">100</span> </code></pre>
+ =&gt; <span class="dv">100</span> </code></pre></div>
 <p>Verify that the former default behavior can be obtained by passing in empty values for <code>prototype</code>, <code>sort</code>, and <code>limit</code>.</p>
-<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; <span class="dt">Zip</span>.all({},{},<span class="dv">0</span>,<span class="dv">nil</span>).to_a.count
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; <span class="dt">Zip</span>.all({},{},<span class="dv">0</span>,<span class="dv">nil</span>).to_a.count
 getting all zips, prototype={}, sort={}, offset=<span class="dv">0</span>, limit=
 zips_development.find | {<span class="st">&quot;find&quot;</span>=&gt;<span class="st">&quot;zips&quot;</span>, <span class="st">&quot;filter&quot;</span>=&gt;{}, 
   <span class="st">&quot;projection&quot;</span>=&gt;{<span class="st">&quot;_id&quot;</span>=&gt;<span class="dv">true</span>, <span class="st">&quot;city&quot;</span>=&gt;<span class="dv">true</span>, <span class="st">&quot;state&quot;</span>=&gt;<span class="dv">true</span>, <span class="st">&quot;pop&quot;</span>=&gt;<span class="dv">true</span>}, <span class="st">&quot;skip&quot;</span>=&gt;<span class="dv">0</span>, <span class="st">&quot;sort&quot;</span>=&gt;{}}
 
- =&gt; <span class="dv">29353</span> </code></pre>
+ =&gt; <span class="dv">29353</span> </code></pre></div>
 <p>Lets attempt a few additional query combinations for our updated <code>all()</code> method</p>
-<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; <span class="dt">Zip</span>.all({<span class="st">&#39;state&#39;</span>:<span class="st">&#39;NY&#39;</span>},{<span class="st">&#39;population&#39;</span>:-<span class="dv">1</span>},<span class="dv">0</span>,<span class="dv">1</span>).first
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; <span class="dt">Zip</span>.all({<span class="st">&#39;state&#39;</span>:<span class="st">&#39;NY&#39;</span>},{<span class="st">&#39;population&#39;</span>:-<span class="dv">1</span>},<span class="dv">0</span>,<span class="dv">1</span>).first
 
 getting all zips, prototype={<span class="st">:state=</span>&gt;<span class="st">&quot;NY&quot;</span>}, sort={<span class="st">:pop=</span>&gt;-<span class="dv">1</span>}, offset=<span class="dv">0</span>, limit=<span class="dv">1</span>
 zips_development.find | {<span class="st">&quot;find&quot;</span>=&gt;<span class="st">&quot;zips&quot;</span>, <span class="st">&quot;filter&quot;</span>=&gt;{<span class="st">&quot;state&quot;</span>=&gt;<span class="st">&quot;NY&quot;</span>}, 
@@ -178,11 +178,11 @@ zips_development.find {<span class="st">&quot;find&quot;</span>=&gt;<span class=
     <span class="st">&quot;projection&quot;</span>=&gt;{<span class="st">&quot;_id&quot;</span>=&gt;<span class="dv">true</span>, <span class="st">&quot;city&quot;</span>=&gt;<span class="dv">true</span>, <span class="st">&quot;state&quot;</span>=&gt;<span class="dv">true</span>, <span class="st">&quot;pop&quot;</span>=&gt;<span class="dv">true</span>}, 
     <span class="st">&quot;skip&quot;</span>=&gt;<span class="dv">0</span>, <span class="st">&quot;limit&quot;</span>=&gt;<span class="dv">1</span>, <span class="st">&quot;sort&quot;</span>=&gt;{<span class="st">&quot;pop&quot;</span>=&gt;<span class="dv">1</span>}}
 
- =&gt; {<span class="st">&quot;_id&quot;</span>=&gt;<span class="st">&quot;13436&quot;</span>, <span class="st">&quot;city&quot;</span>=&gt;<span class="st">&quot;RAQUETTE LAKE&quot;</span>, <span class="st">&quot;pop&quot;</span>=&gt;<span class="dv">0</span>, <span class="st">&quot;state&quot;</span>=&gt;<span class="st">&quot;NY&quot;</span>} </code></pre>
+ =&gt; {<span class="st">&quot;_id&quot;</span>=&gt;<span class="st">&quot;13436&quot;</span>, <span class="st">&quot;city&quot;</span>=&gt;<span class="st">&quot;RAQUETTE LAKE&quot;</span>, <span class="st">&quot;pop&quot;</span>=&gt;<span class="dv">0</span>, <span class="st">&quot;state&quot;</span>=&gt;<span class="st">&quot;NY&quot;</span>} </code></pre></div>
 <h3 id="add-instance-support-for-the-fields-and-add-the-ability-to-initialize-from-a-hash">Add Instance Support for the Fields and Add the Ability to Initialize from a Hash</h3>
 <p>Implement the <code>initialize()</code> method so that it can accept a hash for both the internal (<code>:id</code> and <code>:populate</code>) and external (<code>:_id</code> and <code>:pop</code>) views of our fields. The mapping of <code>:_id</code> to <code>:id</code> will help integrate with Rails scaffold. The mapping from <code>:pop</code> to <code>:populate</code> helps us avoid overriding a method introduced later.</p>
 <p>Notice the <code>initialize()</code> method's <code>params</code> hash must account for the <code>id</code> coming in from the view as <code>:id</code>, while coming in from the database as <code>:_id</code>. Both Rails and MongoDB have specific names they want for this key and we must account for this difference.</p>
-<pre class="sourceCode ruby"><code class="sourceCode ruby">  <span class="ot">attr_accessor</span> <span class="st">:id</span>, <span class="st">:city</span>, <span class="st">:state</span>, <span class="st">:population</span>
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby">  <span class="ot">attr_accessor</span> <span class="st">:id</span>, <span class="st">:city</span>, <span class="st">:state</span>, <span class="st">:population</span>
 
   <span class="kw">def</span> to_s
     <span class="st">&quot;</span><span class="ot">#{@id}</span><span class="st">: </span><span class="ot">#{@city}</span><span class="st">, </span><span class="ot">#{@state}</span><span class="st">, pop=</span><span class="ot">#{@population}</span><span class="st">&quot;</span>
@@ -195,50 +195,50 @@ zips_development.find {<span class="st">&quot;find&quot;</span>=&gt;<span class=
     <span class="ot">@city</span>=params[<span class="st">:city</span>]
     <span class="ot">@state</span>=params[<span class="st">:state</span>]
     <span class="ot">@population</span>=params[<span class="st">:pop</span>].nil? ? params[<span class="st">:population</span>] : params[<span class="st">:pop</span>]
-  <span class="kw">end</span></code></pre>
+  <span class="kw">end</span></code></pre></div>
 <p>Test out the initializer by creating an instance of the Zip class from a document returned from MongoDB query.</p>
-<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; doc=<span class="dt">Zip</span>.all({<span class="st">&#39;state&#39;</span>:<span class="st">&#39;NY&#39;</span>},{<span class="st">&#39;population&#39;</span>:-<span class="dv">1</span>},<span class="dv">0</span>,<span class="dv">1</span>).first
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; doc=<span class="dt">Zip</span>.all({<span class="st">&#39;state&#39;</span>:<span class="st">&#39;NY&#39;</span>},{<span class="st">&#39;population&#39;</span>:-<span class="dv">1</span>},<span class="dv">0</span>,<span class="dv">1</span>).first
  =&gt; {<span class="st">&quot;_id&quot;</span>=&gt;<span class="st">&quot;11226&quot;</span>, <span class="st">&quot;city&quot;</span>=&gt;<span class="st">&quot;BROOKLYN&quot;</span>, <span class="st">&quot;pop&quot;</span>=&gt;<span class="dv">111396</span>, <span class="st">&quot;state&quot;</span>=&gt;<span class="st">&quot;NY&quot;</span>} 
 &gt; obj=<span class="dt">Zip</span>.new(doc)
- =&gt; <span class="co">#&lt;Zip:0x0000000829c130 @id=&quot;11226&quot;, @city=&quot;BROOKLYN&quot;, @state=&quot;NY&quot;, @population=111396&gt; </span></code></pre>
+ =&gt; <span class="co">#&lt;Zip:0x0000000829c130 @id=&quot;11226&quot;, @city=&quot;BROOKLYN&quot;, @state=&quot;NY&quot;, @population=111396&gt; </span></code></pre></div>
 <h3 id="add-a-find-class-method-to-findreturn-a-specific-instance">Add a <code>find()</code> Class Method to Find/Return a Specific Instance</h3>
 <p>Enable <code>find()</code> to query by the <code>:_id=&gt;id</code> passed into the method. If found, return a <code>Zip</code> instance initialized from the document hash returned by MongoDB.</p>
-<pre class="sourceCode ruby"><code class="sourceCode ruby">  <span class="kw">def</span> <span class="dv">self</span>.find id
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby">  <span class="kw">def</span> <span class="dv">self</span>.find id
     <span class="dt">Rails</span>.logger.debug {<span class="st">&quot;getting zip </span><span class="ot">#{</span>id<span class="ot">}</span><span class="st">&quot;</span>}
 
     doc=collection.find(<span class="st">:_id=</span>&gt;id)
                   .projection({_id<span class="st">:true</span>, city<span class="st">:true</span>, state<span class="st">:true</span>, pop<span class="st">:true</span>})
                   .first
     <span class="kw">return</span> doc.nil? ? <span class="dv">nil</span> : <span class="dt">Zip</span>.new(doc)
-  <span class="kw">end</span> </code></pre>
+  <span class="kw">end</span> </code></pre></div>
 <p>Lets test this method by obtaining a <code>Zip</code> instance for a particular zipcode and report its population.</p>
-<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; <span class="dt">Zip</span>.find(<span class="st">&quot;11226&quot;</span>).population
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; <span class="dt">Zip</span>.find(<span class="st">&quot;11226&quot;</span>).population
 getting zip <span class="dv">11226</span>
 zips_development.find | {<span class="st">&quot;find&quot;</span>=&gt;<span class="st">&quot;zips&quot;</span>, <span class="st">&quot;filter&quot;</span>=&gt;{<span class="st">&quot;_id&quot;</span>=&gt;<span class="st">&quot;11226&quot;</span>}, 
     <span class="st">&quot;projection&quot;</span>=&gt;{<span class="st">&quot;_id&quot;</span>=&gt;<span class="dv">true</span>, <span class="st">&quot;city&quot;</span>=&gt;<span class="dv">true</span>, <span class="st">&quot;state&quot;</span>=&gt;<span class="dv">true</span>, <span class="st">&quot;pop&quot;</span>=&gt;<span class="dv">true</span>}}
 
- =&gt; <span class="dv">111396</span> </code></pre>
+ =&gt; <span class="dv">111396</span> </code></pre></div>
 <h3 id="implement-a-save-instance-method-to-insert-a-new-zip">Implement a <code>save()</code> Instance Method to Insert a New Zip</h3>
 <p>The <code>save()</code> method should preserve the state of the current <code>zip</code> instance. Note that although we are manually assigning the <code>_id</code> in this case and already know the value without consulting the <code>result</code>. However, for dyanamic <code>_id</code> assignment cases, we can get the <code>inserted_id</code> from the <code>result</code>.</p>
-<pre class="sourceCode ruby"><code class="sourceCode ruby">  <span class="kw">def</span> save 
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby">  <span class="kw">def</span> save 
     <span class="dt">Rails</span>.logger.debug {<span class="st">&quot;saving </span><span class="ot">#{</span><span class="dv">self</span><span class="ot">}</span><span class="st">&quot;</span>}
 
     result=collection.insert_one(_id<span class="st">:@id</span>, city<span class="st">:@city</span>, state<span class="st">:@state</span>, pop<span class="st">:@pop</span>)
     <span class="ot">@id</span>=result.inserted_id
-  <span class="kw">end</span></code></pre>
+  <span class="kw">end</span></code></pre></div>
 <p>We will create a <code>Zip</code> instance and then call <code>save()</code> to insert it into the Database</p>
-<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; zip=<span class="dt">Zip</span>.new({<span class="st">&#39;id&#39;</span>:<span class="st">&quot;00001&quot;</span>,<span class="st">&#39;city&#39;</span>:<span class="st">&quot;Fake City&quot;</span>,<span class="st">&#39;state&#39;</span>:<span class="st">&quot;WY&quot;</span>,<span class="st">&#39;population&#39;</span>:<span class="dv">3</span>})
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; zip=<span class="dt">Zip</span>.new({<span class="st">&#39;id&#39;</span>:<span class="st">&quot;00001&quot;</span>,<span class="st">&#39;city&#39;</span>:<span class="st">&quot;Fake City&quot;</span>,<span class="st">&#39;state&#39;</span>:<span class="st">&quot;WY&quot;</span>,<span class="st">&#39;population&#39;</span>:<span class="dv">3</span>})
  =&gt; <span class="co">#&lt;Zip:0x00000006fd90c0 @id=&quot;00001&quot;, @city=&quot;Fake City&quot;, @state=&quot;WY&quot;, @population=3&gt; </span>
 
 &gt; zip.save
 saving <span class="dv">00001</span>: <span class="dt">Fake</span> <span class="dt">City</span>, <span class="dt">WY</span>, pop=<span class="dv">3</span>
 zips_development.insert | <span class="dt">STARTED</span> | {<span class="st">&quot;insert&quot;</span>=&gt;<span class="st">&quot;zips&quot;</span>, <span class="st">&quot;documents&quot;</span>=&gt;[{<span class="st">&quot;_id&quot;</span>=&gt;<span class="st">&quot;00001&quot;</span>, 
     <span class="st">&quot;city&quot;</span>=&gt;<span class="st">&quot;Fake City&quot;</span>, <span class="st">&quot;state&quot;</span>=&gt;<span class="st">&quot;WY&quot;</span>, <span class="st">&quot;pop&quot;</span>=&gt;<span class="dv">3</span>}], <span class="st">&quot;writeConcern&quot;</span>=&gt;{<span class="st">&quot;w&quot;</span>=&gt;<span class="dv">1</span>}, <span class="st">&quot;ordered&quot;</span>=&gt;<span class="dv">true</span>}
- =&gt; <span class="st">&quot;00001&quot;</span></code></pre>
+ =&gt; <span class="st">&quot;00001&quot;</span></code></pre></div>
 <h3 id="add-an-update-instance-method-to-change-the-values-in-the-database">Add an <code>update()</code> Instance Method to Change the Values in the Database</h3>
 <p>Create an <code>update()</code> method that accepts a hash and performs an update on those values after accounting for any name mappings.</p>
 <p>Note that here -- again -- our method would be much simpler if we did not have to manually map <code>pop</code> to <code>population</code> internally.</p>
-<pre class="sourceCode ruby"><code class="sourceCode ruby">  <span class="kw">def</span> update(updates)
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby">  <span class="kw">def</span> update(updates)
     <span class="dt">Rails</span>.logger.debug {<span class="st">&quot;updating </span><span class="ot">#{</span><span class="dv">self</span><span class="ot">}</span><span class="st"> with </span><span class="ot">#{</span>updates<span class="ot">}</span><span class="st">&quot;</span>}
 
     <span class="co"># map internal :population term to :pop document term</span>
@@ -248,9 +248,9 @@ zips_development.insert | <span class="dt">STARTED</span> | {<span class="st">&q
     <span class="dv">self</span>.class.collection
               .find(_id<span class="st">:@id</span>)
               .update_one(<span class="st">:$set=</span>&gt;updates)
-  <span class="kw">end</span></code></pre>
+  <span class="kw">end</span></code></pre></div>
 <p>To test <code>update()</code> we will obtain a zip instance using <code>find()</code>, then update its <code>population</code> from 3 to 4. Notice that <code>:$set</code> was used to change specific field(s), without changing fields not supplied.</p>
-<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; zip=<span class="dt">Zip</span>.find <span class="st">&quot;00001&quot;</span>
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; zip=<span class="dt">Zip</span>.find <span class="st">&quot;00001&quot;</span>
 getting zip <span class="dv">00001</span>
  =&gt; <span class="co">#&lt;Zip:0x00000005835f68 @id=&quot;00001&quot;, @city=&quot;Fake City&quot;, @state=&quot;WY&quot;, @population=3&gt; </span>
 
@@ -262,18 +262,18 @@ zips_development.update | {<span class="st">&quot;update&quot;</span>=&gt;<span 
 
 &gt; zip=<span class="dt">Zip</span>.find(<span class="st">&quot;00001&quot;</span>).population
 getting zip <span class="dv">00001</span>
- =&gt; <span class="dv">4</span> </code></pre>
+ =&gt; <span class="dv">4</span> </code></pre></div>
 <h3 id="add-a-destroy-instance-method-to-remove-the-current-zip-from-the-database">Add a <code>destroy()</code> Instance Method to Remove the Current Zip from the Database</h3>
 <p><code>destroy()</code> will delete the document from the database that is associated with the instance's <code>:id</code>.</p>
-<pre class="sourceCode ruby"><code class="sourceCode ruby">  <span class="kw">def</span> destroy
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby">  <span class="kw">def</span> destroy
     <span class="dt">Rails</span>.logger.debug {<span class="st">&quot;destroying </span><span class="ot">#{</span><span class="dv">self</span><span class="ot">}</span><span class="st">&quot;</span>}
 
     <span class="dv">self</span>.class.collection
               .find(_id<span class="st">:@id</span>)
               .delete_one   
-  <span class="kw">end</span></code></pre>
+  <span class="kw">end</span></code></pre></div>
 <p>Load an instance with the state of one of the cities and remove that city from the database.</p>
-<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; zip=<span class="dt">Zip</span>.find <span class="st">&quot;00001&quot;</span>
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; zip=<span class="dt">Zip</span>.find <span class="st">&quot;00001&quot;</span>
 getting zip <span class="dv">00001</span>
 zips_development.find | {<span class="st">&quot;find&quot;</span>=&gt;<span class="st">&quot;zips&quot;</span>, <span class="st">&quot;filter&quot;</span>=&gt;{<span class="st">&quot;_id&quot;</span>=&gt;<span class="st">&quot;00001&quot;</span>}, 
     <span class="st">&quot;projection&quot;</span>=&gt;{<span class="st">&quot;_id&quot;</span>=&gt;<span class="dv">true</span>, <span class="st">&quot;city&quot;</span>=&gt;<span class="dv">true</span>, <span class="st">&quot;state&quot;</span>=&gt;<span class="dv">true</span>, <span class="st">&quot;pop&quot;</span>=&gt;<span class="dv">true</span>}}
@@ -287,10 +287,10 @@ zips_development.delete | {<span class="st">&quot;delete&quot;</span>=&gt;<span 
 
 &gt; zip=<span class="dt">Zip</span>.find <span class="st">&quot;00001&quot;</span>
 getting zip <span class="dv">00001</span>
- =&gt; <span class="dv">nil</span> </code></pre>
+ =&gt; <span class="dv">nil</span> </code></pre></div>
 <h3 id="include-activemodelmodel-mixin-behavor">Include <code>ActiveModel::Model</code> Mixin Behavor</h3>
 <p>We need to include the <code>ActiveModel::Model</code> mixin and override its <code>persisted?</code> implementation to simply return the result of whether a primary key has been assigned. JSON marshalling will also expect a <code>created_at</code> and <code>updated_at</code> by default.</p>
-<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="kw">class</span> <span class="dt">Zip</span>
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="kw">class</span> <span class="dt">Zip</span>
   include <span class="dt">ActiveModel</span>::<span class="dt">Model</span>
 ...
   <span class="kw">def</span> persisted?
@@ -301,10 +301,10 @@ getting zip <span class="dv">00001</span>
   <span class="kw">end</span>
   <span class="kw">def</span> updated_at
     <span class="dv">nil</span>
-  <span class="kw">end</span></code></pre>
+  <span class="kw">end</span></code></pre></div>
 <h3 id="full-model-class">Full Model Class</h3>
 <p>Our class should now be at a point where it can integrate with Rails as an official Model class -- with some help.</p>
-<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="kw">class</span> <span class="dt">Zip</span>
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="kw">class</span> <span class="dt">Zip</span>
   include <span class="dt">ActiveModel</span>::<span class="dt">Model</span>
 
   <span class="ot">attr_accessor</span> <span class="st">:id</span>, <span class="st">:city</span>, <span class="st">:state</span>, <span class="st">:population</span>
@@ -412,7 +412,7 @@ getting zip <span class="dv">00001</span>
               .find(_id<span class="st">:@id</span>)
               .delete_one   
   <span class="kw">end</span>  
-<span class="kw">end</span></code></pre>
+<span class="kw">end</span></code></pre></div>
 <h2 id="create-controller-and-view">Create Controller and View</h2>
 <p>Generate the controller and view using a scaffold command that does not create a model class.</p>
 <pre class="shell"><code>$ rails g scaffold_controller Zip id city state population:integer
@@ -433,8 +433,8 @@ getting zip <span class="dv">00001</span>
       create    app/views/zips/index.json.jbuilder
       create    app/views/zips/show.json.jbuilder</code></pre>
 <p>Verify the route to the new controller is in place in <code>config/routes.rb</code></p>
-<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="dt">Rails</span>.application.routes.draw <span class="kw">do</span>
-  resources <span class="st">:zips</span></code></pre>
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="dt">Rails</span>.application.routes.draw <span class="kw">do</span>
+  resources <span class="st">:zips</span></code></pre></div>
 <p>Access the new page and observe an error between what was returned by the Model (a hash with an <code>:_id</code> key) and what is required by the view (an instance of a class with the id() method).</p>
 <pre><code>http://localhost:3000/zips
 
@@ -447,34 +447,34 @@ undefined method `id&#39; for {&quot;_id&quot;=&gt;&quot;99773&quot;, &quot;city
         &lt;td&gt;&lt;%= zip.state %&gt;&lt;/td&gt;
         &lt;td&gt;&lt;%= zip.population %&gt;&lt;/td&gt;</code></pre>
 <p>Add the following helper method to the <code>app/helpers/zips_helper.rb</code> to convert a Mongo document to a Ruby class instance. We left it as a document so the <code>all()</code> method did not have to EAGERly access every document in the result set before it was know it would be used.</p>
-<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="kw">module</span> <span class="dt">ZipsHelper</span>
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="kw">module</span> <span class="dt">ZipsHelper</span>
   <span class="kw">def</span> toZip(value)
     <span class="co">#change value to a Zip if not already a Zip       </span>
     <span class="kw">return</span> value.is_a?(<span class="dt">Zip</span>) ? value : <span class="dt">Zip</span>.new(value)
   <span class="kw">end</span>
-<span class="kw">end</span></code></pre>
+<span class="kw">end</span></code></pre></div>
 <p>Add a call to the helper method in <code>app/views/zips/index.html.erb</code></p>
-<pre class="sourceCode html"><code class="sourceCode html">    <span class="er">&lt;</span>% @zips.each do |zip| %&gt;
-      <span class="er">&lt;</span>% zip=toZip(zip) %&gt;</code></pre>
+<div class="sourceCode"><pre class="sourceCode html"><code class="sourceCode html">    <span class="er">&lt;</span>% @zips.each do |zip| %&gt;
+      <span class="er">&lt;</span>% zip=toZip(zip) %&gt;</code></pre></div>
 <p>Not there is a similar issue with the JSON view as well</p>
-<pre class="sourceCode ruby"><code class="sourceCode ruby">http:<span class="ot">//</span>localhost:<span class="dv">3000</span>/zips.json
-key <span class="kw">not</span> found: <span class="st">:id</span>
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby">http:<span class="ot">//</span>localhost:<span class="dv">3000</span>/zips.json
+key <span class="kw">not</span> <span class="st">found: :id</span>
 
 json.array!(<span class="ot">@zips</span>) <span class="kw">do</span> |zip|
   json.extract! zip, <span class="st">:id</span>, <span class="st">:id</span>, <span class="st">:city</span>, <span class="st">:state</span>, <span class="st">:population</span>
   json.url zip_url(zip, format: <span class="st">:json</span>)
-<span class="kw">end</span></code></pre>
+<span class="kw">end</span></code></pre></div>
 <p>Fix the JSON view error by calling the helper method in <code>app/helpers/zips/index.json.jbuilder</code>.</p>
-<pre class="sourceCode ruby"><code class="sourceCode ruby">json.array!(<span class="ot">@zips</span>) <span class="kw">do</span> |zip|
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby">json.array!(<span class="ot">@zips</span>) <span class="kw">do</span> |zip|
   zip=toZip(zip)
   json.extract! zip, <span class="st">:id</span>, <span class="st">:id</span>, <span class="st">:city</span>, <span class="st">:state</span>, <span class="st">:population</span>
   json.url zip_url(zip, format: <span class="st">:json</span>)
-<span class="kw">end</span></code></pre>
+<span class="kw">end</span></code></pre></div>
 <h2 id="test-drive">Test Drive</h2>
 <p>In our <code>ZipsController</code>, prior to a <code>:show</code>, <code>:edit</code>, <code>:update</code>, or <code>:destroy</code> action being executed, we will first invoke the <code>set_zip()</code> method to retreive the specific <code>Zip</code> by <code>id</code>. The generated helper comes ready to call <code>Zip.find</code> and expect to get an instance back.</p>
 <p>The <code>zip_params()</code> method restricts mass assignments for <code>:zip</code> parameters to the fields of <code>:id</code>, <code>:city</code>, <code>:state</code>, and <code>:populaton</code>.</p>
-<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="kw">class</span> <span class="dt">ZipsController</span> &lt; <span class="dt">ApplicationController</span>
-  before_action <span class="st">:set_zip</span>, only: [<span class="st">:show</span>, <span class="st">:edit</span>, <span class="st">:update</span>, <span class="st">:destroy</span>]
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="kw">class</span> <span class="dt">ZipsController</span> &lt; <span class="dt">ApplicationController</span>
+  before_action <span class="st">:set_zip</span>, <span class="st">only: </span>[<span class="st">:show</span>, <span class="st">:edit</span>, <span class="st">:update</span>, <span class="st">:destroy</span>]
 
   <span class="kw">private</span>
     <span class="co"># Use callbacks to share common setup or constraints between actions.</span>
@@ -485,7 +485,7 @@ json.array!(<span class="ot">@zips</span>) <span class="kw">do</span> |zip|
     <span class="co"># Never trust parameters from the scary internet, only allow the white list through.</span>
     <span class="kw">def</span> zip_params
       params.require(<span class="st">:zip</span>).permit(<span class="st">:id</span>, <span class="st">:city</span>, <span class="st">:state</span>, <span class="st">:population</span>)
-    <span class="kw">end</span></code></pre>
+    <span class="kw">end</span></code></pre></div>
 <h3 id="index">Index</h3>
 <p><code>index()</code> retrieves all the <code>Zips</code>. The generated action method comes ready to call <code>Zip.all</code>.</p>
 <pre><code>http://localhost:3000/zips
@@ -495,20 +495,20 @@ def index
 end</code></pre>
 <h3 id="show">Show</h3>
 <p><code>show()</code> retrieves a specific <code>Zip</code> based upon its <code>id</code>. The generated action method is fully implemented by the generated <code>set_zip</code> helper method.</p>
-<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="co">#GET /zips/{id}</span>
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="co">#GET /zips/{id}</span>
 <span class="co">#GET /zips/{id}.json</span>
-  before_action <span class="st">:set_zip</span>, only: [<span class="st">:show</span>, <span class="st">:edit</span>, <span class="st">:update</span>, <span class="st">:destroy</span>]
+  before_action <span class="st">:set_zip</span>, <span class="st">only: </span>[<span class="st">:show</span>, <span class="st">:edit</span>, <span class="st">:update</span>, <span class="st">:destroy</span>]
   <span class="kw">def</span> set_zip
     <span class="ot">@zip</span> = <span class="dt">Zip</span>.find(params[<span class="st">:id</span>])
   <span class="kw">end</span>
 
   <span class="kw">def</span> show
-  <span class="kw">end</span></code></pre>
+  <span class="kw">end</span></code></pre></div>
 <h3 id="new-create">New + Create</h3>
 <p><code>new()</code> returns an initial prototype to the form to create a new <code>Zip</code>.</p>
 <p><code>create()</code> accepts the results and creates a new <code>Zip</code> instance in the database.</p>
 <p>Both of these generated action methods come ready to call <code>Zip.new</code>, which uses the <code>initialize</code> method. The generated create action also comes ready to invoke <code>save</code> on the <code>Zip</code> instance.</p>
-<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="co">#POST /zips/new</span>
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="co">#POST /zips/new</span>
   <span class="kw">def</span> new
     <span class="ot">@zip</span> = <span class="dt">Zip</span>.new
   <span class="kw">end</span>
@@ -519,22 +519,22 @@ end</code></pre>
 
     respond_to <span class="kw">do</span> |format|
       <span class="kw">if</span> <span class="ot">@zip</span>.save
-        format.html { redirect_to <span class="ot">@zip</span>, notice: <span class="st">&#39;Zip was successfully created.&#39;</span> }
-        format.json { render <span class="st">:show</span>, status: <span class="st">:created</span>, location: <span class="ot">@zip</span> }
+        format.html { redirect_to <span class="ot">@zip</span>, <span class="st">notice: &#39;Zip was successfully created.&#39;</span> }
+        format.json { render <span class="st">:show</span>, <span class="st">status: :created</span>, <span class="st">location: </span><span class="ot">@zip</span> }
       <span class="kw">else</span>
         format.html { render <span class="st">:new</span> }
-        format.json { render json: <span class="ot">@zip</span>.errors, status: <span class="st">:unprocessable_entity</span> }
+        format.json { render <span class="st">json: </span><span class="ot">@zip</span>.errors, <span class="st">status: :unprocessable_entity</span> }
       <span class="kw">end</span>
     <span class="kw">end</span>
-  <span class="kw">end</span></code></pre>
+  <span class="kw">end</span></code></pre></div>
 <h3 id="edit-update">Edit + Update</h3>
 <p><code>edit()</code> retrieves the instance from the database based upon its <code>id</code>.</p>
 <p><code>update()</code> applies the changes to the retrieved instance provided by <code>edit()</code>.</p>
 <p>Both generated action methods rely on the <code>before_action</code> and the generated <code>update</code> action also comes ready to call <code>update</code> on the <code>Zip</code> instance.</p>
-<pre class="sourceCode ruby"><code class="sourceCode ruby">http:<span class="ot">//</span>localhost:<span class="dv">3000</span>/zips/<span class="dv">00002</span>/edit
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby">http:<span class="ot">//</span>localhost:<span class="dv">3000</span>/zips/<span class="dv">00002</span>/edit
 
 <span class="co">#GET /zips/{id}</span>
-  before_action <span class="st">:set_zip</span>, only: [<span class="st">:show</span>, <span class="st">:edit</span>, <span class="st">:update</span>, <span class="st">:destroy</span>]
+  before_action <span class="st">:set_zip</span>, <span class="st">only: </span>[<span class="st">:show</span>, <span class="st">:edit</span>, <span class="st">:update</span>, <span class="st">:destroy</span>]
   <span class="kw">def</span> set_zip
     <span class="ot">@zip</span> = <span class="dt">Zip</span>.find(params[<span class="st">:id</span>])
   <span class="kw">end</span>
@@ -546,36 +546,36 @@ end</code></pre>
   <span class="kw">def</span> update
     respond_to <span class="kw">do</span> |format|
       <span class="kw">if</span> <span class="ot">@zip</span>.update(zip_params)
-        format.html { redirect_to <span class="ot">@zip</span>, notice: <span class="st">&#39;Zip was successfully updated.&#39;</span> }
-        format.json { render <span class="st">:show</span>, status: <span class="st">:ok</span>, location: <span class="ot">@zip</span> }
+        format.html { redirect_to <span class="ot">@zip</span>, <span class="st">notice: &#39;Zip was successfully updated.&#39;</span> }
+        format.json { render <span class="st">:show</span>, <span class="st">status: :ok</span>, <span class="st">location: </span><span class="ot">@zip</span> }
       <span class="kw">else</span>
         format.html { render <span class="st">:edit</span> }
-        format.json { render json: <span class="ot">@zip</span>.errors, status: <span class="st">:unprocessable_entity</span> }
+        format.json { render <span class="st">json: </span><span class="ot">@zip</span>.errors, <span class="st">status: :unprocessable_entity</span> }
       <span class="kw">end</span>
     <span class="kw">end</span>
-  <span class="kw">end</span></code></pre>
+  <span class="kw">end</span></code></pre></div>
 <h3 id="destroy">Destroy</h3>
 <p><code>destroy()</code> removes a specific <code>Zip</code> instance based upon its <code>id</code>. The generated action method comes ready to call <code>destroy</code> on the <code>Zip</code> instance.</p>
-<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="co">#DELETE /zips/{id}</span>
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="co">#DELETE /zips/{id}</span>
   <span class="kw">def</span> destroy
     <span class="ot">@zip</span>.destroy
     respond_to <span class="kw">do</span> |format|
-      format.html { redirect_to zips_url, notice: <span class="st">&#39;Zip was successfully destroyed.&#39;</span> }
+      format.html { redirect_to zips_url, <span class="st">notice: &#39;Zip was successfully destroyed.&#39;</span> }
       format.json { head <span class="st">:no_content</span> }
     <span class="kw">end</span>
-  <span class="kw">end</span></code></pre>
+  <span class="kw">end</span></code></pre></div>
 <h3 id="root-application">Root Application</h3>
 <p>Add a second line to <code>config/routes.rb</code> to make zips the root application.</p>
-<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="dt">Rails</span>.application.routes.draw <span class="kw">do</span>
-  root <span class="st">&#39;zips#index&#39;</span></code></pre>
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="dt">Rails</span>.application.routes.draw <span class="kw">do</span>
+  root <span class="st">&#39;zips#index&#39;</span></code></pre></div>
 <h2 id="add-pagination">Add <a href="https://github.com/mislav/will_paginate/wiki">Pagination</a></h2>
 <h3 id="add-the-will_paginate-to-the-gemfile">Add the <code>will_paginate</code> to the Gemfile</h3>
-<pre class="sourceCode ruby"><code class="sourceCode ruby">gem <span class="st">&#39;will_paginate&#39;</span>, <span class="st">&#39;~&gt; 3.0.7&#39;</span></code></pre>
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby">gem <span class="st">&#39;will_paginate&#39;</span>, <span class="st">&#39;~&gt; 3.0.7&#39;</span></code></pre></div>
 <h3 id="execute-bundle-to-install-the-gem">Execute <code>bundle</code> to install the Gem</h3>
 <pre class="shell"><code>bundle</code></pre>
 <h3 id="add-the-will_paginate-command-to-the-view">Add the <code>will_paginate</code> Command to the View</h3>
 <p>This command will add page properties to the displayed view and controls advance paging. Specifically, it can pass <code>:page</code> as a number &gt;= 1. <code>will_paginate</code> also uses <code>:per_page</code> to express the row limit for a single page.</p>
-<pre class="sourceCode html"><code class="sourceCode html"><span class="kw">&lt;table&gt;</span>
+<div class="sourceCode"><pre class="sourceCode html"><code class="sourceCode html"><span class="kw">&lt;table&gt;</span>
 ...
   <span class="kw">&lt;tbody&gt;</span>
     <span class="er">&lt;</span>% @zips.each do |zip| %&gt;
@@ -587,16 +587,16 @@ end</code></pre>
     <span class="er">&lt;</span>% end %&gt;
   <span class="kw">&lt;/tbody&gt;</span>
 <span class="kw">&lt;/table&gt;</span>
-<span class="er">&lt;</span>%= will_paginate @zips %&gt;</code></pre>
+<span class="er">&lt;</span>%= will_paginate @zips %&gt;</code></pre></div>
 <h3 id="add-will_paginate-support-for-paging-in-the-controller">Add <code>will_paginate</code> Support for Paging in the Controller</h3>
 <p>The controller is passing a controlled set of parameters to the <code>Model.paginate</code> call. The page number is currently the only value passed but <code>:per_page</code> could be specified here as well.</p>
-<pre class="sourceCode ruby"><code class="sourceCode ruby">  <span class="kw">def</span> index
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby">  <span class="kw">def</span> index
     <span class="co">#@zips = Zip.all</span>
     <span class="ot">@zips</span> = <span class="dt">Zip</span>.paginate(<span class="st">:page</span> =&gt; params[<span class="st">:page</span>])
-  <span class="kw">end</span>    </code></pre>
+  <span class="kw">end</span>    </code></pre></div>
 <h3 id="add-will_paginate-support-for-paging-in-the-model">Add <code>will_paginate</code> Support for Paging in the Model</h3>
 <p>This method implements a facade around the <code>all()</code> method by translating the <code>will_paginate</code> inputs into <code>all()</code> query inputs and converts the document array results into a <code>will_paginate</code> result that contains such things as total number of documents.</p>
-<pre class="sourceCode ruby"><code class="sourceCode ruby">  <span class="kw">def</span> <span class="dv">self</span>.paginate(params)
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby">  <span class="kw">def</span> <span class="dv">self</span>.paginate(params)
     <span class="dt">Rails</span>.logger.debug(<span class="st">&quot;paginate(</span><span class="ot">#{</span>params<span class="ot">}</span><span class="st">)&quot;</span>)
     page=(params[<span class="st">:page</span>] ||= <span class="dv">1</span>).to_i
     limit=(params[<span class="st">:per_page</span>] ||= <span class="dv">30</span>).to_i
@@ -614,7 +614,7 @@ end</code></pre>
     <span class="dt">WillPaginate</span>::<span class="dt">Collection</span>.create(page, limit, total) <span class="kw">do</span> |pager|
       pager.replace(zips)
     <span class="kw">end</span>    
-  <span class="kw">end</span></code></pre>
+  <span class="kw">end</span></code></pre></div>
 <p><a href="http://pathfindersoftware.com/2008/06/how-to-use-will_paginate-with-non-activerecord-collectionarray/">A reference on how to use will_paginate</a></p>
 <h2 id="quick-test-drive">Quick Test Drive</h2>
 <p>As a quick test to verify our current <code>will_paginate</code> implementation, the following URL should land us on the 3rd page of &quot;Listing Zips&quot;</p>
@@ -631,7 +631,7 @@ end</code></pre>
 </ul>
 <h4 id="create-a-helper-method-in-the-controller-to-convert-the-sort-query-param-to-a-mongodb-query-sort-hash">Create a Helper Method in the Controller to Convert the Sort Query Param to a MongoDB Query Sort Hash</h4>
 <p><code>app/controller/zips_controller.rb</code></p>
-<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="kw">private</span>
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="kw">private</span>
     <span class="co">#create a hash sort spec from query param</span>
     <span class="co">#sort=state:1,city,population:-1</span>
     <span class="co">#{state:1, city:1, population:-1}</span>
@@ -645,20 +645,20 @@ end</code></pre>
         <span class="kw">end</span>
       <span class="kw">end</span>
       <span class="kw">return</span> order
-    <span class="kw">end</span></code></pre>
+    <span class="kw">end</span></code></pre></div>
 <h4 id="update-the-controller-method-to-pass-the-query-and-sort-terms-into-the-will_paginate-call">Update the Controller Method to Pass the Query and Sort Terms into the will_paginate Call</h4>
 <p>This passes right to our <code>Model.paginate</code> call where we can add a small amount of processing to pass it through to the <code>all()</code> method.</p>
-<pre class="sourceCode ruby"><code class="sourceCode ruby">  <span class="kw">def</span> index
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby">  <span class="kw">def</span> index
     <span class="co">#@zips = Zip.all</span>
     <span class="co">#@zips = Zip.paginate(params)</span>
 
     args=params.clone                      <span class="co">#update a clone of params</span>
     args[<span class="st">:sort</span>]=get_sort_hash(args[<span class="st">:sort</span>]) <span class="co">#replace sort with hash</span>
     <span class="ot">@zips</span> = <span class="dt">Zip</span>.paginate(args)
-  <span class="kw">end</span></code></pre>
+  <span class="kw">end</span></code></pre></div>
 <h4 id="update-the-model-method-to-pass-the-query-and-sort-terms-into-all">Update the Model Method to Pass the Query and Sort Terms into <code>all()</code></h4>
 <p><code>app/models/zip.rb</code></p>
-<pre class="sourceCode ruby"><code class="sourceCode ruby">  <span class="kw">def</span> <span class="dv">self</span>.paginate(params)
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby">  <span class="kw">def</span> <span class="dv">self</span>.paginate(params)
     ...
     sort=params[<span class="st">:sort</span>] ||= {}
 
@@ -669,7 +669,7 @@ end</code></pre>
     total=all(params, sort, <span class="dv">0</span>, <span class="dv">1</span>).count
 
     ...
-  <span class="kw">end</span></code></pre>
+  <span class="kw">end</span></code></pre></div>
 <h3 id="final-test-drive">Final Test Drive</h3>
 <p>With our selection criteria and ordering logic now in place, the below URL:</p>
 <p><code>http://localhost:3000/?page=38&amp;per_page=10&amp;sort=population:-1,city:1&amp;state=MD</code></p>
@@ -678,121 +678,122 @@ end</code></pre>
 <table>
 <thead>
 <tr class="header">
-<th align="left">Id</th>
-<th align="left">City</th>
-<th align="left">State</th>
-<th align="left">Population</th>
-<th align="left"></th>
-<th align="left"></th>
-<th align="left"></th>
+<th>Id</th>
+<th>City</th>
+<th>State</th>
+<th>Population</th>
+<th></th>
+<th></th>
+<th></th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">21522</td>
-<td align="left">BITTINGER</td>
-<td align="left">MD</td>
-<td align="left">479</td>
-<td align="left">Show</td>
-<td align="left">Edit</td>
-<td align="left">Destroy</td>
+<td>21522</td>
+<td>BITTINGER</td>
+<td>MD</td>
+<td>479</td>
+<td>Show</td>
+<td>Edit</td>
+<td>Destroy</td>
 </tr>
 <tr class="even">
-<td align="left">21156</td>
-<td align="left">Upper Falls</td>
-<td align="left">MD</td>
-<td align="left">464</td>
-<td align="left">Show</td>
-<td align="left">Edit</td>
-<td align="left">Destroy</td>
+<td>21156</td>
+<td>Upper Falls</td>
+<td>MD</td>
+<td>464</td>
+<td>Show</td>
+<td>Edit</td>
+<td>Destroy</td>
 </tr>
 <tr class="odd">
-<td align="left">20632</td>
-<td align="left">FAULKNER</td>
-<td align="left">MD</td>
-<td align="left">459</td>
-<td align="left">Show</td>
-<td align="left">Edit</td>
-<td align="left">Destroy</td>
+<td>20632</td>
+<td>FAULKNER</td>
+<td>MD</td>
+<td>459</td>
+<td>Show</td>
+<td>Edit</td>
+<td>Destroy</td>
 </tr>
 <tr class="even">
-<td align="left">21677</td>
-<td align="left">WOOLFORD</td>
-<td align="left">MD</td>
-<td align="left">459</td>
-<td align="left">Show</td>
-<td align="left">Edit</td>
-<td align="left">Destroy</td>
+<td>21677</td>
+<td>WOOLFORD</td>
+<td>MD</td>
+<td>459</td>
+<td>Show</td>
+<td>Edit</td>
+<td>Destroy</td>
 </tr>
 <tr class="odd">
-<td align="left">21816</td>
-<td align="left">CHANCE</td>
-<td align="left">MD</td>
-<td align="left">415</td>
-<td align="left">Show</td>
-<td align="left">Edit</td>
-<td align="left">Destroy</td>
+<td>21816</td>
+<td>CHANCE</td>
+<td>MD</td>
+<td>415</td>
+<td>Show</td>
+<td>Edit</td>
+<td>Destroy</td>
 </tr>
 <tr class="even">
-<td align="left">20630</td>
-<td align="left">DRAYDEN</td>
-<td align="left">MD</td>
-<td align="left">413</td>
-<td align="left">Show</td>
-<td align="left">Edit</td>
-<td align="left">Destroy</td>
+<td>20630</td>
+<td>DRAYDEN</td>
+<td>MD</td>
+<td>413</td>
+<td>Show</td>
+<td>Edit</td>
+<td>Destroy</td>
 </tr>
 <tr class="odd">
-<td align="left">20779</td>
-<td align="left">TRACYS LANDING</td>
-<td align="left">MD</td>
-<td align="left">413</td>
-<td align="left">Show</td>
-<td align="left">Edit</td>
-<td align="left">Destroy</td>
+<td>20779</td>
+<td>TRACYS LANDING</td>
+<td>MD</td>
+<td>413</td>
+<td>Show</td>
+<td>Edit</td>
+<td>Destroy</td>
 </tr>
 <tr class="even">
-<td align="left">20615</td>
-<td align="left">BROOMES ISLAND</td>
-<td align="left">MD</td>
-<td align="left">404</td>
-<td align="left">Show</td>
-<td align="left">Edit</td>
-<td align="left">Destroy</td>
+<td>20615</td>
+<td>BROOMES ISLAND</td>
+<td>MD</td>
+<td>404</td>
+<td>Show</td>
+<td>Edit</td>
+<td>Destroy</td>
 </tr>
 <tr class="odd">
-<td align="left">21672</td>
-<td align="left">TODDVILE</td>
-<td align="left">MD</td>
-<td align="left">361</td>
-<td align="left">Show</td>
-<td align="left">Edit</td>
-<td align="left">Destroy</td>
+<td>21672</td>
+<td>TODDVILE</td>
+<td>MD</td>
+<td>361</td>
+<td>Show</td>
+<td>Edit</td>
+<td>Destroy</td>
 </tr>
 <tr class="even">
-<td align="left">21840</td>
-<td align="left">NANTICOKE</td>
-<td align="left">MD</td>
-<td align="left">358</td>
-<td align="left">Show</td>
-<td align="left">Edit</td>
-<td align="left">Destroy</td>
+<td>21840</td>
+<td>NANTICOKE</td>
+<td>MD</td>
+<td>358</td>
+<td>Show</td>
+<td>Edit</td>
+<td>Destroy</td>
 </tr>
 </tbody>
 </table>
 <p><code>&lt;-- Previous 1 2 ... 34 35 36 37 38 39 40 41 42 Next --&gt;</code></p>
 <p>If you flip the value of <code>city:1</code> from <code>1</code> to <code>-1</code>, should will see the ordering of <code>DRAYDEN</code> and <code>TRACYS LANDING</code> switch places.</p>
 <h2 id="heroku-deployment">Heroku Deployment</h2>
-<h3 id="setup-database-on-mongolabs">Setup Database on MongoLabs</h3>
+<h3 id="setup-mongodb-database-on-mlab">Setup MongoDB Database on mLab</h3>
 <ol style="list-style-type: decimal">
-<li><p>Create a <a href="https://mongolab.com/"><code>MongoLabs Account</code></a></p>
-<pre><code>https://mongolab.com/home</code></pre></li>
-<li><p>Create a (Free Sandbox) Database on MongoLabs</p>
+<li><p>Create an <a href="https://mlab.com/"><code>mLab Account</code></a></p>
+<pre><code>https://mlab.com/home</code></pre></li>
+<li><p>Create a (Free Sandbox) Database on mLab</p>
 <ul>
-<li>From your mongolab home page, select <code>Create New</code> MongoDB Deployments</li>
+<li>From your mLab home page, select <code>Create New</code> MongoDB Deployments</li>
 <li>For <code>Cloud Provider:</code> select <code>Amazon Web Services</code>
 <ul>
-<li>On the <code>Location:</code> Pull Down Menu, select the Region that is geographically closest to you<br /></li>
+<li>On the <code>Location:</code> Pull Down Menu, select the Region that is geographically closest to you<br />
+</li>
 </ul></li>
 <li>Under Plan: select the <code>Single-node</code> Option
 <ul>
@@ -802,13 +803,13 @@ end</code></pre>
 <li>In the <code>Database name:</code> input field, supply a name (i.e., zips_production)</li>
 <li>Verify the <code>Price:</code> field calculator is <code>$0 / month</code></li>
 <li>Select the <code>Create new MongoDB deployment</code> button</li>
-<li>On your mongolab home page, you should now see your database (i.e., zips_production) listed</li>
+<li>On your mLab home page, you should now see your database (i.e., zips_production) listed</li>
 <li>Now select your newly created MongoDB deployment</li>
 <li><p>The following URL template should be displayed with the details pertaining to your deployment</p>
 <pre><code>To connect using a driver via the standard MongoDB URI: 
     mongodb://&lt;dbuser&gt;:&lt;dbpass&gt;@&lt;dbhost&gt;/&lt;dbname&gt;</code></pre></li>
 </ul></li>
-<li><p>Create a Database User and Password on MongoLabs</p>
+<li><p>Create a Database User and Password on mLab</p>
 <ul>
 <li>Select the <code>Users</code> Menu</li>
 <li>Select the <code>Add database user</code> button</li>
@@ -822,7 +823,7 @@ end</code></pre>
 <li><p>Import <a href="http://media.mongodb.org/zips.json"><code>zips.json</code></a> from MongoDB using the database and user account created above</p>
 <pre class="shell"><code>$ wget http://media.mongodb.org/zips.json
 $ mongoimport -h dbhost -d dbname -c zips -u dbuser -p dbpass --file zips.json
-2015-12-07T18:03:34.015-0500    connected to: ds######.mongolab.com:&lt;port&gt;
+2015-12-07T18:03:34.015-0500    connected to: ds######.mlab.com:&lt;port&gt;
 2015-12-07T18:03:36.416-0500    [################........] &lt;dbname&gt;.&lt;collection_name&gt; 2.1 MB/3.0 MB (68.5%)
 2015-12-07T18:03:38.953-0500    imported 29353 documents</code></pre></li>
 </ol>
@@ -830,7 +831,8 @@ $ mongoimport -h dbhost -d dbname -c zips -u dbuser -p dbpass --file zips.json
 <ol style="list-style-type: decimal">
 <li><p>Create a <a href="https://heroku.com"><code>Heroku Account</code></a></p>
 <ul>
-<li>If not yet installed, download and install the <a href="https://toolbelt.heroku.com/">Heroku Toolbelt</a>.<br /></li>
+<li>If not yet installed, download and install the <a href="https://toolbelt.heroku.com/">Heroku Toolbelt</a>.<br />
+</li>
 <li>This client CLI will be used in later steps that rely on <code>heroku</code> commands</li>
 </ul></li>
 <li><p>Register your application with Heroku by changing to the directory with a git repository and invoking <code>heroku apps:create (appname)</code>.</p>
@@ -848,21 +850,21 @@ heroku  https://git.heroku.com/appname.git (push)
 <li><p>Add a <code>MONGOLAB_URI</code> environment variable where <code>dbhost</code> is both host and port# concatenated together, separated by a &quot;:&quot; (host:port) .</p>
 <pre class="shell"><code>$ heroku config:add MONGOLAB_URI=mongodb://dbuser:dbpass@dbhost/dbname</code></pre></li>
 <li><p>Add a <code>production</code> profile to the <code>config/mongoid.yml</code> file. The following <a href="https://devcenter.heroku.com/articles/mongolab#connecting-to-existing-mongolab-deployments-from-heroku"><code>Mongoid connection information</code></a> was provided by the <code>MongoLab</code> page on the <code>Heroku</code> Dev Center page.</p>
-<pre class="sourceCode yaml"><code class="sourceCode yaml"><span class="fu">production:</span>
+<div class="sourceCode"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span class="fu">production:</span>
   <span class="fu">clients:</span>
     <span class="fu">default:</span>
       <span class="fu">uri:</span> &lt;%= ENV[&#39;MONGOLAB_URI&#39;] %&gt;
       <span class="fu">options:</span>
-        <span class="fu">connect_timeout:</span> 15</code></pre></li>
+        <span class="fu">connect_timeout:</span> 15</code></pre></div></li>
 <li><p>Update the <code>Gemfile</code> so that Heroku will accept and deploy our application.</p>
 <p>Restrict the <code>sqlite</code> gem in <code>Gemfile</code> to the development profile. Heroku does not support <code>sqlite</code> and this application does not use an <code>RDBMS</code>. However, this gem was put there by by <code>rails new</code> by default and required to stick around because we have not removed ActiveRecord from the application.</p>
-<pre class="sourceCode ruby"><code class="sourceCode ruby">gem <span class="st">&#39;sqlite3&#39;</span>, group: <span class="st">:development</span></code></pre>
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby">gem <span class="st">&#39;sqlite3&#39;</span>, <span class="st">group: :development</span></code></pre></div>
 <p>Add the postgres gem to the production profile. We have not neutered the application of ActiveRecord and Heroku wants a supported database for that platform.</p>
-<pre class="sourceCode ruby"><code class="sourceCode ruby">group <span class="st">:production</span> <span class="kw">do</span>
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby">group <span class="st">:production</span> <span class="kw">do</span>
   <span class="co">#use postgres on heroku</span>
   gem <span class="st">&#39;pg&#39;</span>
   gem <span class="st">&#39;rails_12factor&#39;</span>
-<span class="kw">end</span> </code></pre>
+<span class="kw">end</span> </code></pre></div>
 <p>Be sure to run bundle when complete and check the Gemfile.lock file into git.</p>
 <pre class="shell"><code>$ bundle</code></pre></li>
 <li><p>Commit changes to application</p>
