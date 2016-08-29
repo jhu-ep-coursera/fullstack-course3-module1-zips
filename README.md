@@ -375,7 +375,7 @@ cases, we can get the `inserted_id` from the `result`.
   def save 
     Rails.logger.debug {"saving #{self}"}
 
-    result=collection.insert_one(_id:@id, city:@city, state:@state, pop:@pop)
+    result=self.class.collection.insert_one(_id:@id, city:@city, state:@state, pop:@pop)
     @id=result.inserted_id
   end
 ```
