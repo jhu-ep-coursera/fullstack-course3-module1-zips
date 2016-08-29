@@ -407,7 +407,7 @@ not have to manually map `pop` to `population` internally.
 
     # map internal :population term to :pop document term
     updates[:pop]=updates[:population]  if !updates[:population].nil?
-    updates.slice!(:city, :state, :pop) if !slice.nil?
+    updates.slice!(:city, :state, :pop) if !updates.nil?
 
     self.class.collection
               .find(_id:@id)
