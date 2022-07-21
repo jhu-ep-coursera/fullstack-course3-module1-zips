@@ -148,7 +148,7 @@ GEM
     tilt (2.0.1)
     turbolinks (2.5.3)
       coffee-rails
-    tzinfo (1.2.5)
+    tzinfo (1.2.10)
       thread_safe (~> 0.1)
     tzinfo-data (1.2015.7)
       tzinfo (>= 1.0.0)
